@@ -20,19 +20,42 @@ describe('studio routes', () => {
         return mongoose.connection.close();
     });
 
+    //TODO: make this async later
+    it('POST / route', () => {
+
+        return request(app)
+            .post('/api/v1/studios')
+            .send({ 
+                name: 'bad pickle',
+                address: { city: 'boston', state: 'new york', country: 'usa' }
+            })
+            .then(res => {
+                expect(res.body).toEqual({
+                    name: 'bad pickle',
+                    address: { city: 'boston', state: 'new york', country: 'usa' }, 
+                    __v: 0
+                });
+            });
+    });  
+
 
     it('GET / gets all studios I guess?', async() => {
 
-        const studio = await Studio.create({
+        const studio1 = await Studio.create({
             name: 'A1',
             address: { city: 'nyc', state: 'new york', country: 'usa' }
+        });
+        const studio2 = await Studio.create({
+            name: 'lionsgate',
+            address: { city: 'montreal', state: 'somewhere', country: 'canada' }
         });
 
         return request(app)
             .get('/api/v1/studios')
             .then(res => {
-                const studioJSON = JSON.parse(JSON.stringify(studio));
-                expect(res.body).toEqual([studioJSON]);
+                const studio1JSON = JSON.parse(JSON.stringify(studio1));
+                const studio2JSON = JSON.parse(JSON.stringify(studio2));
+                expect(res.body).toEqual([studio1JSON, studio2JSON]);
             });
     });
 });
