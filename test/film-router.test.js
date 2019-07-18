@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
+// const Review = require('../lib/models/Review');
+// const Reviewer = require('../lib/models/Reviewer');
 
 describe('app routes', () => {
     beforeAll(() => {
@@ -106,13 +108,38 @@ describe('app routes', () => {
             name: 'Crying Lady'
         });
 
+        // const reviewer = await Reviewer.create({
+        //     name: 'kyle',
+        //     company: 'ehhhhhh'
+        // });
+
+        // const review = await Review.create({
+        //     reviewer: 'guy with an opinion',
+        //     rating: 100,
+        //     review: 'amazing, oh my gosh y\'all',
+        //     film: 'a film'
+        // });
+
         const film = await Film.create({
             title: 'Midsommar',
             studio: studio._id,
             released: 2019,
             cast: [{
-                actor: actor._id
-            }]
+                actor: {
+                    _id: actor._id,
+                    role: actor.role,
+                    name: actor.name
+                }
+            }],
+            // reviews: [{
+            //     _id: review._id,
+            //     rating: review.rating,
+            //     review: review.review,
+            //     reviewer: {
+            //         _id: reviewer._id,
+            //         name: reviewer.name
+            //     }
+            // }]
         });
 
         return request(app)
