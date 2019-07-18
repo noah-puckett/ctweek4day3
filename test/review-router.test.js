@@ -72,14 +72,40 @@ describe('review routes', () => {
     // GET /api/v1/Reviews to get all Reviews
     it('GET returns all reviews', async() => {
 
-        const review1 = await Review.create({
+        const reviewer = await Reviewer.create({
             name: 'sir critiquesalot',
-            company: 'clickbait headliner LLC',
+            company: 'clickbait headliner LLC'
+        });
+
+        const studio = await Studio.create({
+            name: 'A1'
+        });
+
+        const actor = await Actor.create({
+            name: 'Crying Lady'
+        });
+
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [{
+                actor: actor._id
+            }]
+        });
+
+        const review1 = await Review.create({
+            rating: 100,
+            reviewer: reviewer._id,
+            review: 'oh my gosh what on earth',
+            film: film._id,
         });
 
         const review2 = await Review.create({
-            name: 'reviewCreaturePerson 456',
-            company: 'shocknews yellingsite TM'
+            rating: 20,
+            reviewer: reviewer._id,
+            review: 'today I created this review and it was good',
+            film: film._id,
         });
 
         return request(app)
