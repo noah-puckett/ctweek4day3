@@ -4,6 +4,8 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
+const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
 const Actor = require('../lib/models/Actor');
 
 describe('app routes', () => {
@@ -51,9 +53,10 @@ describe('app routes', () => {
         return request(app)
             .get('/api/v1/actors')
             .then(res => {
-                const actor1JSON = JSON.parse(JSON.stringify(actor1));
-                const actor2JSON = JSON.parse(JSON.stringify(actor2));
-                expect(res.body).toEqual([actor1JSON, actor2JSON]);
+                expect(res.body).toEqual([
+                    { _id: actor1._id.toString(), name: actor1.name },
+                    { _id: actor2._id.toString(), name: actor2.name }
+                ]);
             });
     });
 
@@ -61,64 +64,46 @@ describe('app routes', () => {
     // GET /api/v1/Actors/:id to get a Actor by id
     it('GET /:id returns a Actor by id', async() => {
 
+        const studio = await Studio.create({
+            name: 'A1',
+            address: { city: 'nyc', state: 'new york', country: 'usa' }
+        });
+        
         const actor = await Actor.create({
-            name: 'ActorLady 123',
+            name: 'Crying Lady',
+            dob: new Date('October 31, 2009'),
+            pob: 'ohio'
+        });
+
+        const film = await Film.create({
+            title: 'Midsommar2 Electric Cultaroo',
+            studio: studio._id,
+            released: 2020,
+            cast: [{
+                actor: actor._id
+            }]
         });
 
         return request(app)
             .get(`/api/v1/actors/${actor._id}`)
             .then(res => {
-                const actorJSON = JSON.parse(JSON.stringify(actor));
-                expect(res.body).toEqual(actorJSON);
+                expect(res.body).toEqual({
+                    name: actor.name,
+                    dob: actor.dob.toISOString(),
+                    pob: actor.pob,
+                    films: [{ 
+                        _id: film._id.toString(), 
+                        title: film.title, 
+                        released: film.released 
+                    }]
+                });
             });
     });
-
-    // //PATCH /api/v1/:id
-    // it('PATCH Actors/:id updates a single value on a Actor by id', async() => {
-
-    //     const owner = await Actor.create({
-    //         name: 'ActorLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
-
-    //     const Actor = await Actor.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     });
-
-    //     const newActor = {
-    //         name: 'NEW pupperoni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     };
-
-    //     return request(app)
-    //         .patch(`/api/v1/Actors/${Actor._id}`)
-    //         .send(newActor)
-    //         .then(res => {
-    //             expect(res.body).toEqual({
-    //                 _id: expect.any(String),
-    //                 name: 'NEW pupperoni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
-    //                 __v: 0
-    //             });
-    //         });
-    // });
-
 
     it('PUT actors/:id updates a actor by id', async() => {
 
         const actor = await Actor.create({
             name: 'ActorLady 123',
-        });
-
-        const newActor = await Actor.create({
-            name: 'NEW actorlady 456',
         });
 
         return request(app)

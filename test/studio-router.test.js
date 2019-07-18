@@ -54,9 +54,10 @@ describe('studio routes', () => {
         return request(app)
             .get('/api/v1/studios')
             .then(res => {
-                const studio1JSON = JSON.parse(JSON.stringify(studio1));
-                const studio2JSON = JSON.parse(JSON.stringify(studio2));
-                expect(res.body).toEqual([studio1JSON, studio2JSON]);
+                expect(res.body).toEqual([
+                    { _id: studio1._id.toString(), name: studio1.name },
+                    { _id: studio2._id.toString(), name: studio2.name }
+                ]);
             });
     });
 
