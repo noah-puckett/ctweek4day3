@@ -5,7 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
-
+const Film = require('../lib/models/Film');
 
 describe('studio routes', () => {
     beforeAll(() => {
@@ -67,11 +67,25 @@ describe('studio routes', () => {
             address: { city: 'nyc', state: 'new york', country: 'usa' }
         });
 
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: []
+        });
+
         return request(app)
             .get(`/api/v1/studios/${studio._id}`)
             .then(res => {
-                const dogJSON = JSON.parse(JSON.stringify(studio));
-                expect(res.body).toEqual(dogJSON);
+                expect(res.body).toEqual({
+                    _id: studio._id.toString(),
+                    name: studio.name,
+                    address: studio.address, 
+                    films: [{ 
+                        _id: film._id.toString(),
+                        title: film.title
+                    }]
+                });
             });
     });
 
@@ -92,7 +106,7 @@ describe('studio routes', () => {
                 expect(res.body).toEqual({ 
                     _id: expect.any(String),
                     name: 'Lionsgate',
-                    address: { city: 'boston', state: 'new york', country: 'usa'},
+                    address: { city: 'boston', state: 'new york', country: 'usa' },
                     __v: 0 });
             });
     });

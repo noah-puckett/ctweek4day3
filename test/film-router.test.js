@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
 const Studio = require('../lib/models/Studio');
 const Actor = require('../lib/models/Actor');
-// const Review = require('../lib/models/Review');
-// const Reviewer = require('../lib/models/Reviewer');
+const Review = require('../lib/models/Review');
+const Reviewer = require('../lib/models/Reviewer');
 
 describe('app routes', () => {
     beforeAll(() => {
@@ -69,7 +69,7 @@ describe('app routes', () => {
             name: 'Crying Lady'
         });
 
-        const film1 = await Film.create({
+        Film.create({
             title: 'Midsommar',
             studio: studio._id,
             released: 2019,
@@ -78,7 +78,7 @@ describe('app routes', () => {
             }]
         });
 
-        const film2 = await Film.create({
+        Film.create({
             title: 'Midsommar2 Electric Cultaroo',
             studio: studio._id,
             released: 2020,
@@ -90,9 +90,13 @@ describe('app routes', () => {
         return request(app)
             .get('/api/v1/films')
             .then(res => {
-                const film1JSON = JSON.parse(JSON.stringify(film1));
-                const film2JSON = JSON.parse(JSON.stringify(film2));
-                expect(res.body).toEqual([film1JSON, film2JSON]);
+                res.body.forEach(film => {
+                    expect(res.body).toContainEqual({ 
+                        _id: film._id, 
+                        title: film.title, 
+                        studio: { _id: film.studio._id, name: film.studio.name }, 
+                        released: film.released });
+                });
             });
     });
 
@@ -108,85 +112,37 @@ describe('app routes', () => {
             name: 'Crying Lady'
         });
 
-        // const reviewer = await Reviewer.create({
-        //     name: 'kyle',
-        //     company: 'ehhhhhh'
-        // });
-
-        // const review = await Review.create({
-        //     reviewer: 'guy with an opinion',
-        //     rating: 100,
-        //     review: 'amazing, oh my gosh y\'all',
-        //     film: 'a film'
-        // });
-
+        const reviewer = await Reviewer.create({
+            name: 'kyle',
+            company: 'ehhhhhh'
+        });
+        
         const film = await Film.create({
             title: 'Midsommar',
             studio: studio._id,
             released: 2019,
             cast: [{
-                actor: {
-                    _id: actor._id,
-                    role: actor.role,
-                    name: actor.name
-                }
+                actor: actor._id,
             }],
-            // reviews: [{
-            //     _id: review._id,
-            //     rating: review.rating,
-            //     review: review.review,
-            //     reviewer: {
-            //         _id: reviewer._id,
-            //         name: reviewer.name
-            //     }
-            // }]
         });
-
+        
+        await Review.create({
+            reviewer: reviewer._id,
+            rating: 100,
+            review: 'amazing, oh my gosh y\'all',
+            film: film._id
+        });
         return request(app)
             .get(`/api/v1/films/${film._id}`)
             .then(res => {
-                const filmJSON = JSON.parse(JSON.stringify(film));
-                expect(res.body).toEqual(filmJSON);
+                expect(res.body).toEqual({ 
+                    _id: film._id.toString(), 
+                    title: film.title, 
+                    studio: { _id: studio._id.toString(), name: studio.name }, 
+                    released: film.released,
+                    cast: [{ _id: expect.any(String), actor: { _id: actor._id.toString(), name: actor.name } }] });
             });
     });
-
-    // //PATCH /api/v1/:id
-    // it('PATCH Films/:id updates a single value on a Film by id', async() => {
-
-    //     const owner = await Film.create({
-    //         name: 'FilmLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
-
-    //     const Film = await Film.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     });
-
-    //     const newFilm = {
-    //         name: 'NEW pupperoni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     };
-
-    //     return request(app)
-    //         .patch(`/api/v1/Films/${Film._id}`)
-    //         .send(newFilm)
-    //         .then(res => {
-    //             expect(res.body).toEqual({
-    //                 _id: expect.any(String),
-    //                 name: 'NEW pupperoni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
-    //                 __v: 0
-    //             });
-    //         });
-    // });
-
 
     it('PUT Films/:id updates a Film by id', async() => {
 
