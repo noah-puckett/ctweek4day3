@@ -121,9 +121,33 @@ describe('review routes', () => {
     // GET /api/v1/Reviews/:id to get a Review by id
     it('GET /:id returns a review by id', async() => {
 
-        const review = await Review.create({
+        const reviewer = await Reviewer.create({
             name: 'sir critiquesalot',
-            company: 'clickbait headliner LLC',
+            company: 'clickbait headliner LLC'
+        });
+
+        const studio = await Studio.create({
+            name: 'A1'
+        });
+
+        const actor = await Actor.create({
+            name: 'Crying Lady'
+        });
+
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [{
+                actor: actor._id
+            }]
+        });
+
+        const review = await Review.create({
+            rating: 100,
+            reviewer: reviewer._id,
+            review: 'oh my gosh what on earth',
+            film: film._id,
         });
 
         return request(app)
@@ -174,9 +198,33 @@ describe('review routes', () => {
 
     it('PUT reviews/:id updates a review by id', async() => {
 
-        const review = await Review.create({
+        const reviewer = await Reviewer.create({
             name: 'sir critiquesalot',
-            company: 'clickbait headliner LLC',
+            company: 'clickbait headliner LLC'
+        });
+
+        const studio = await Studio.create({
+            name: 'A1'
+        });
+
+        const actor = await Actor.create({
+            name: 'Crying Lady'
+        });
+
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [{
+                actor: actor._id
+            }]
+        });
+
+        const review = await Review.create({
+            rating: 100,
+            reviewer: reviewer._id,
+            review: 'oh my gosh what on earth',
+            film: film._id,
         });
 
         return request(app)
@@ -188,8 +236,10 @@ describe('review routes', () => {
             .then(res => {
                 expect(res.body).toEqual({ 
                     _id: expect.any(String),
-                    name: 'NEW Reviewlady 456',
-                    company: 'mommybloggers inc', 
+                    rating: 100,
+                    reviewer: reviewer._id.toString(),
+                    review: 'oh my gosh what on earth',
+                    film: film._id.toString(),
                     __v: 0 });
             });
     });
