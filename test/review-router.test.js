@@ -111,9 +111,24 @@ describe('review routes', () => {
         return request(app)
             .get('/api/v1/reviews')
             .then(res => {
-                const review1JSON = JSON.parse(JSON.stringify(review1));
-                const review2JSON = JSON.parse(JSON.stringify(review2));
-                expect(res.body).toEqual([review1JSON, review2JSON]);
+                expect(res.body).toEqual([
+
+                    { _id: review1._id.toString(), 
+                        rating: review1.rating,
+                        review: review1.review,
+                        film: {
+                            _id: film._id.toString(),
+                            title: film.title
+                        } },
+
+                    { _id: review2._id.toString(), 
+                        rating: review2.rating,
+                        review: review2.review,
+                        film: {
+                            _id: film._id.toString(),
+                            title: film.title
+                        } }
+                ]);
             });
     });
 

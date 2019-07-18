@@ -5,6 +5,10 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Reviewer = require('../lib/models/Reviewer');
+const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
+const Studio = require('../lib/models/Studio');
+const Review = require('../lib/models/Review');
 
 describe('app routes', () => {
     beforeAll(() => {
@@ -55,9 +59,10 @@ describe('app routes', () => {
         return request(app)
             .get('/api/v1/reviewers')
             .then(res => {
-                const reviewer1JSON = JSON.parse(JSON.stringify(reviewer1));
-                const reviewer2JSON = JSON.parse(JSON.stringify(reviewer2));
-                expect(res.body).toEqual([reviewer1JSON, reviewer2JSON]);
+                expect(res.body).toEqual([
+                    { _id: reviewer1._id.toString(), name: reviewer1.name, company: reviewer1.company },
+                    { _id: reviewer2._id.toString(), name: reviewer2.name, company: reviewer2.company }
+                ]);
             });
     });
 
@@ -70,11 +75,47 @@ describe('app routes', () => {
             company: 'clickbait headliner LLC',
         });
 
+        const studio = await Studio.create({
+            name: 'A1'
+        });
+
+        const actor = await Actor.create({
+            name: 'Crying Lady'
+        });
+        
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [{
+                actor: actor._id,
+            }],
+        });
+
+        const review = await Review.create({
+            rating: 100,
+            reviewer: reviewer._id,
+            review: 'oh my gosh what on earth',
+            film: film._id,
+        });
+
         return request(app)
             .get(`/api/v1/reviewers/${reviewer._id}`)
             .then(res => {
-                const reviewerJSON = JSON.parse(JSON.stringify(reviewer));
-                expect(res.body).toEqual(reviewerJSON);
+                expect(res.body).toEqual({
+                    _id: reviewer._id.toString(),
+                    name: reviewer.name,
+                    company: reviewer.company,
+                    reviews: [{
+                        _id: review._id.toString(),
+                        rating: review.rating,
+                        review: review.review,
+                        film: {
+                            _id: film._id.toString(),
+                            title: film.title
+                        }
+                    }]
+                });
             });
     });
 
