@@ -126,7 +126,7 @@ describe('app routes', () => {
             }],
         });
         
-        await Review.create({
+        const review = await Review.create({
             reviewer: reviewer._id,
             rating: 100,
             review: 'amazing, oh my gosh y\'all',
@@ -135,12 +135,19 @@ describe('app routes', () => {
         return request(app)
             .get(`/api/v1/films/${film._id}`)
             .then(res => {
+                console.log(res.body)
                 expect(res.body).toEqual({ 
                     _id: film._id.toString(), 
                     title: film.title, 
                     studio: { _id: studio._id.toString(), name: studio.name }, 
                     released: film.released,
-                    cast: [{ _id: expect.any(String), actor: { _id: actor._id.toString(), name: actor.name } }] });
+                    cast: [{ _id: expect.any(String), actor: { _id: actor._id.toString(), name: actor.name } }],
+                    reviews: [{
+                        _id: review._id.toString(),
+                        rating: review.rating,
+                        review: review.review,
+                        reviewer: { _id: reviewer._id.toString(), name: reviewer.name }
+                    }] });
             });
     });
 
