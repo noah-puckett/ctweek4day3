@@ -112,34 +112,43 @@ describe('studio routes', () => {
             });
     });
 
-    //     // DELETE /api/v1/dogs/:id to delete a dog
-    //     it('DELETEs a dog by its id', async() => {
+    // DELETE /api/v1/dogs/:id to delete a dog
+    it('deletes if there is NO film', async() => {
 
-    //         const owner = await Person.create({
-    //             name: 'DogLady 123',
-    //             email: 'ownerlady@gmail.com'
-    //         });
+        const studio = await Studio.create({
+            name: 'A1',
+            address: { city: 'nyc', state: 'new york', country: 'usa' }
+        });
 
-    //         const dog = await Dog.create({
-    //             name: 'pupperooni',
-    //             age: 12,
-    //             weight: '200lbs',
-    //             owner: owner._id.toString(), 
-    //         });
+        return request(app)
+            .delete(`/api/v1/studios/${studio._id}`)
+            .then(res => {
+                expect(res.body).toEqual({ 
+                    _id: expect.any(String),
+                    name: 'A1',
+                    address: { city: 'nyc', state: 'new york', country: 'usa' }, 
+                    __v: 0 });
+            });
+    });
 
-    //         return request(app)
-    //             .delete(`/api/v1/dogs/${dog._id}`)
-    //             .then(res => {
-    //                 expect(res.body).toEqual({ 
-    //                     _id: expect.any(String),
-    //                     name: 'pupperooni',
-    //                     age: 12,
-    //                     weight: '200lbs',
-    //                     owner: owner._id.toString(), 
-    //                     __v: 0 });
-    //             });
-    //     });
-    // });
-    // //------------------------------------------------------------------------------------------------------------
+    it('does NOT delete if there IS a film', async() => {
 
+        const studio = await Studio.create({
+            name: 'A1',
+            address: { city: 'nyc', state: 'new york', country: 'usa' }
+        });
+
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: []
+        });
+        console.log(film)
+        return request(app)
+            .delete(`/api/v1/studios/${studio._id}`)
+            .then(res => {
+                expect(res.body).toEqual({ error: 'nope' });
+            });
+    });
 });

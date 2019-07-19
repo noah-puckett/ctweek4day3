@@ -119,30 +119,18 @@ describe('app routes', () => {
             });
     });
 
-    // // DELETE /api/v1/Actors/:id to delete a Actor
     // it('DELETEs a Actor by its id', async() => {
 
-    //     const owner = await Actor.create({
+    //     const actor = await Actor.create({
     //         name: 'ActorLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
 
-    //     const Actor = await Actor.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
     //     });
-
     //     return request(app)
-    //         .delete(`/api/v1/Actors/${Actor._id}`)
+    //         .delete(`/api/v1/actors/${actor._id}`)
     //         .then(res => {
     //             expect(res.body).toEqual({ 
     //                 _id: expect.any(String),
-    //                 name: 'pupperooni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
+    //                 name: actor.name,
     //                 __v: 0 });
     //         });
     // });
