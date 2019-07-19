@@ -21,7 +21,6 @@ describe('app routes', () => {
         return mongoose.connection.close();
     });
 
-    // POST /api/v1/Actors to create a Actor
     it('POST route creates a Actor in the database', () => {
 
         return request(app)
@@ -38,8 +37,7 @@ describe('app routes', () => {
             });
     });  
       
-      
-    // GET /api/v1/Actors to get all Actors
+
     it('GET returns all actors', async() => {
 
         const actor1 = await Actor.create({
@@ -61,7 +59,6 @@ describe('app routes', () => {
     });
 
 
-    // GET /api/v1/Actors/:id to get a Actor by id
     it('GET /:id returns a Actor by id', async() => {
 
         const studio = await Studio.create({
@@ -99,6 +96,7 @@ describe('app routes', () => {
                 });
             });
     });
+
 
     it('PUT actors/:id updates a actor by id', async() => {
 
@@ -140,6 +138,7 @@ describe('app routes', () => {
             });
     });
 
+    
     it('does NOT delete if there IS a film', async() => {
 
         const studio = await Studio.create({

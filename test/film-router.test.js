@@ -23,7 +23,7 @@ describe('app routes', () => {
         return mongoose.connection.close();
     });
 
-    // POST /api/v1/Films to create a Film
+
     it('POST route creates a film in the database', async() => {
 
         const studio = await Studio.create({
@@ -101,7 +101,6 @@ describe('app routes', () => {
     });
 
 
-    // GET /api/v1/Films/:id to get a Film by id
     it('GET /:id returns a Film by id', async() => {
 
         const studio = await Studio.create({
@@ -150,6 +149,7 @@ describe('app routes', () => {
             });
     });
 
+
     it('PUT Films/:id updates a Film by id', async() => {
 
         const studio = await Studio.create({
@@ -194,7 +194,7 @@ describe('app routes', () => {
             });
     });
 
-    // DELETE /api/v1/Films/:id to delete a Film
+
     it('DELETEs a Film by its id', async() => {
 
         const studio = await Studio.create({

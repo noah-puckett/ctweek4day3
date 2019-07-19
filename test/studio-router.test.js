@@ -20,7 +20,7 @@ describe('studio routes', () => {
         return mongoose.connection.close();
     });
 
-    //TODO: make this async later
+
     it('POST / route', () => {
 
         return request(app)
@@ -40,7 +40,7 @@ describe('studio routes', () => {
     });  
 
 
-    it('GET / gets all studios I guess?', async() => {
+    it('GET / gets all studios', async() => {
 
         const studio1 = await Studio.create({
             name: 'A1',
@@ -60,6 +60,7 @@ describe('studio routes', () => {
                 ]);
             });
     });
+
 
     it('GET /:id route', async() => {
 
@@ -90,6 +91,7 @@ describe('studio routes', () => {
             });
     });
 
+
     it('PUT studios/:id route', async() => {
 
         const studio = await Studio.create({
@@ -112,6 +114,7 @@ describe('studio routes', () => {
             });
     });
 
+
     it('deletes if there is NO film', async() => {
 
         const studio = await Studio.create({
@@ -130,6 +133,7 @@ describe('studio routes', () => {
             });
     });
 
+    
     it('does NOT delete if there IS a film', async() => {
 
         const studio = await Studio.create({

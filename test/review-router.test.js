@@ -23,7 +23,7 @@ describe('review routes', () => {
         return mongoose.connection.close();
     });
 
-    // POST /api/v1/Reviews to create a Review
+ 
     it('POST route creates a Review in the database', async() => {
 
         const reviewer = await Reviewer.create({
@@ -71,7 +71,6 @@ describe('review routes', () => {
     });  
       
       
-    // GET /api/v1/Reviews to get all Reviews
     it('GET returns all reviews', async() => {
 
         const reviewer = await Reviewer.create({
@@ -188,32 +187,4 @@ describe('review routes', () => {
                     __v: 0 });
             });
     });
-
-    // // DELETE /api/v1/Reviews/:id to delete a Review
-    // it('DELETEs a Review by its id', async() => {
-
-    //     const owner = await Review.create({
-    //         name: 'ReviewLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
-
-    //     const Review = await Review.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     });
-
-    //     return request(app)
-    //         .delete(`/api/v1/Reviews/${Review._id}`)
-    //         .then(res => {
-    //             expect(res.body).toEqual({ 
-    //                 _id: expect.any(String),
-    //                 name: 'pupperooni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
-    //                 __v: 0 });
-    //         });
-    // });
 });
