@@ -63,6 +63,8 @@ describe('review routes', () => {
                     reviewer: reviewer._id.toString(),
                     review: 'oh my gosh what on earth',
                     film: film._id.toString(),
+                    createdAt: expect.any(String),
+                    updatedAt: expect.any(String),
                     __v: 0
                 });
             });
@@ -119,7 +121,9 @@ describe('review routes', () => {
                         film: {
                             _id: film._id.toString(),
                             title: film.title
-                        } },
+                        },
+                        createdAt: expect.any(String),
+                        updatedAt: expect.any(String), },
 
                     { _id: review2._id.toString(), 
                         rating: review2.rating,
@@ -127,88 +131,12 @@ describe('review routes', () => {
                         film: {
                             _id: film._id.toString(),
                             title: film.title
-                        } }
+                        },
+                        createdAt: expect.any(String),
+                        updatedAt: expect.any(String), }
                 ]);
             });
     });
-
-
-    // GET /api/v1/Reviews/:id to get a Review by id
-    it('GET /:id returns a review by id', async() => {
-
-        const reviewer = await Reviewer.create({
-            name: 'sir critiquesalot',
-            company: 'clickbait headliner LLC'
-        });
-
-        const studio = await Studio.create({
-            name: 'A1'
-        });
-
-        const actor = await Actor.create({
-            name: 'Crying Lady'
-        });
-
-        const film = await Film.create({
-            title: 'Midsommar',
-            studio: studio._id,
-            released: 2019,
-            cast: [{
-                actor: actor._id
-            }]
-        });
-
-        const review = await Review.create({
-            rating: 100,
-            reviewer: reviewer._id,
-            review: 'oh my gosh what on earth',
-            film: film._id,
-        });
-
-        return request(app)
-            .get(`/api/v1/reviews/${review._id}`)
-            .then(res => {
-                const reviewJSON = JSON.parse(JSON.stringify(review));
-                expect(res.body).toEqual(reviewJSON);
-            });
-    });
-
-    // //PATCH /api/v1/:id
-    // it('PATCH Reviews/:id updates a single value on a Review by id', async() => {
-
-    //     const owner = await Review.create({
-    //         name: 'ReviewLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
-
-    //     const Review = await Review.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     });
-
-    //     const newReview = {
-    //         name: 'NEW pupperoni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     };
-
-    //     return request(app)
-    //         .patch(`/api/v1/Reviews/${Review._id}`)
-    //         .send(newReview)
-    //         .then(res => {
-    //             expect(res.body).toEqual({
-    //                 _id: expect.any(String),
-    //                 name: 'NEW pupperoni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
-    //                 __v: 0
-    //             });
-    //         });
-    // });
 
 
     it('PUT reviews/:id updates a review by id', async() => {
@@ -255,6 +183,8 @@ describe('review routes', () => {
                     reviewer: reviewer._id.toString(),
                     review: 'oh my gosh what on earth',
                     film: film._id.toString(),
+                    createdAt: expect.any(String),
+                    updatedAt: expect.any(String),
                     __v: 0 });
             });
     });
