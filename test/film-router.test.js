@@ -194,31 +194,40 @@ describe('app routes', () => {
             });
     });
 
-    // // DELETE /api/v1/Films/:id to delete a Film
-    // it('DELETEs a Film by its id', async() => {
+    // DELETE /api/v1/Films/:id to delete a Film
+    it('DELETEs a Film by its id', async() => {
 
-    //     const owner = await Film.create({
-    //         name: 'FilmLady 123',
-    //         email: 'ownerlady@gmail.com'
-    //     });
+        const studio = await Studio.create({
+            name: 'A1'
+        });
 
-    //     const Film = await Film.create({
-    //         name: 'pupperooni',
-    //         age: 12,
-    //         weight: '200lbs',
-    //         owner: owner._id.toString(), 
-    //     });
+        const actor = await Actor.create({
+            name: 'Crying Lady'
+        });
 
-    //     return request(app)
-    //         .delete(`/api/v1/Films/${Film._id}`)
-    //         .then(res => {
-    //             expect(res.body).toEqual({ 
-    //                 _id: expect.any(String),
-    //                 name: 'pupperooni',
-    //                 age: 12,
-    //                 weight: '200lbs',
-    //                 owner: owner._id.toString(), 
-    //                 __v: 0 });
-    //         });
-    // });
+        const film = await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [{
+                actor: actor._id
+            }]
+        });
+
+
+        return request(app)
+            .delete(`/api/v1/films/${film._id}`)
+            .then(res => {
+                expect(res.body).toEqual({ 
+                    _id: expect.any(String),
+                    title: 'Midsommar',
+                    studio: studio._id.toString(),
+                    released: 2019,
+                    cast: [{
+                        _id: expect.any(String),
+                        actor: actor._id.toString(),
+                    }], 
+                    __v: 0 });
+            });
+    });
 });
