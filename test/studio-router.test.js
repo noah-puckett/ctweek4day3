@@ -112,7 +112,6 @@ describe('studio routes', () => {
             });
     });
 
-    // DELETE /api/v1/dogs/:id to delete a dog
     it('deletes if there is NO film', async() => {
 
         const studio = await Studio.create({
@@ -138,13 +137,13 @@ describe('studio routes', () => {
             address: { city: 'nyc', state: 'new york', country: 'usa' }
         });
 
-        const film = await Film.create({
+        await Film.create({
             title: 'Midsommar',
             studio: studio._id,
             released: 2019,
             cast: []
         });
-        console.log(film)
+
         return request(app)
             .delete(`/api/v1/studios/${studio._id}`)
             .then(res => {

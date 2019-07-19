@@ -119,19 +119,55 @@ describe('app routes', () => {
             });
     });
 
-    // it('DELETEs a Actor by its id', async() => {
+   
+    it('deletes actor if there is NO film', async() => {
 
-    //     const actor = await Actor.create({
-    //         name: 'ActorLady 123',
+        const actor = await Actor.create({
+            name: 'Crying Lady',
+            dob: new Date('October 31, 2009'),
+            pob: 'ohio'
+        });
 
-    //     });
-    //     return request(app)
-    //         .delete(`/api/v1/actors/${actor._id}`)
-    //         .then(res => {
-    //             expect(res.body).toEqual({ 
-    //                 _id: expect.any(String),
-    //                 name: actor.name,
-    //                 __v: 0 });
-    //         });
-    // });
+        return request(app)
+            .delete(`/api/v1/actors/${actor._id}`)
+            .then(res => {
+                expect(res.body).toEqual({ 
+                    _id: expect.any(String),
+                    name: 'Crying Lady',
+                    dob: new Date('October 31, 2009').toISOString(),
+                    pob: 'ohio', 
+                    __v: 0 });
+            });
+    });
+
+    it('does NOT delete if there IS a film', async() => {
+
+        const studio = await Studio.create({
+            name: 'A1',
+            address: { city: 'nyc', state: 'new york', country: 'usa' }
+        });
+
+        const actor = await Actor.create({
+            name: 'Crying Lady',
+            dob: new Date('October 31, 2009'),
+            pob: 'ohio'
+        });
+
+        await Film.create({
+            title: 'Midsommar',
+            studio: studio._id,
+            released: 2019,
+            cast: [
+                {
+                    actor: actor._id.toString()
+                }
+            ]
+        });
+
+        return request(app)
+            .delete(`/api/v1/actors/${actor._id}`)
+            .then(res => {
+                expect(res.body).toEqual({ error: 'nope' });
+            });
+    });
 });
